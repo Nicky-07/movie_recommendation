@@ -39,15 +39,35 @@ if selected_section == "🎬 Movie Recommendation":
     """, unsafe_allow_html=True)
 
     df5['normalized_name'] = df5['name'].str.strip().str.lower()
-    selected_movie = st.selectbox("🎬 Select a movie:", df5['name'].sort_values().unique(), index=None, placeholder="Choose a movie")
+    #movie selectbox
+    selected_movie = st.selectbox(
+    "🎬 Select a movie:", 
+    df5['name'].sort_values().unique(), 
+    index=None, 
+    placeholder="Choose a movie",
+    key="movie_selector"
+)
 
-    if selected_movie:
-        index = df5[df5['name'] == selected_movie].index[0]
-        num_recommend = st.selectbox("🔢 Number of recommendations:", [2, 5, 7, 10], index=3)
-        vectors = vector.transform(df5['tag'])
+# --- Show number of recommendations only after movie selected ---
+if selected_movie:
+    index = df5[df5['name'] == selected_movie].index[0]
+
+    num_recommend = st.selectbox(
+    "🔢 Number of recommendations:",
+    [1,2,3,4,5,6,7,8,9,10],
+    index=None,
+    placeholder="Choose number of recommendations",
+    key="recommendation_selector"
+)
+    
+
+    # ✅ Now do recommendations ONLY after both are selected
+    if num_recommend:
+        st.subheader(f"📽️ Top ({num_recommend}) Recommended Movies ")
+
+        vectors = vectorizer.transform(df5['tag'])
         distances, indexes = model.kneighbors(vectors[index], n_neighbors=num_recommend + 1)
 
-        st.subheader("📽️ Top Recommended Movies")
         col1, col2, col3 = st.columns([1.1, 1, 1.1])
         col_index = 0
         rec_titles, rec_ids = [], []
