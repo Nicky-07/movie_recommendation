@@ -65,7 +65,7 @@ if selected_movie:
     if num_recommend:
         st.subheader(f"📽️ Top ({num_recommend}) Recommended Movies ")
 
-        vectors = vectorizer.transform(df5['tag'])
+        vectors = vector.transform(df5['tag'])
         distances, indexes = model.kneighbors(vectors[index], n_neighbors=num_recommend + 1)
 
         col1, col2, col3 = st.columns([1.1, 1, 1.1])
